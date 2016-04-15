@@ -4,6 +4,9 @@ import numpy as np
 import argparse
 import imutils
 import cv2
+import DistanceCalculator
+import Table
+import Puck
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
@@ -34,10 +37,16 @@ if not args.get("video", False):
 else:
     camera = cv2.VideoCapture(args["video"])
 
+table = None
+edgeOffset = None
+
 # keep looping
 while True:
     # grab the current frame
     (grabbed, frame) = camera.read()
+
+    edgeOffset = 50  # TODO: Some cleverly detected value.
+    table = Table.Table(edgeOffset)
 
     # if we are viewing a video and we did not grab a frame,
     # then we have reached the end of the video
@@ -63,6 +72,13 @@ while True:
     greenContours = cv2.findContours(greenMask.copy(), cv2.RETR_EXTERNAL,
                                      cv2.CHAIN_APPROX_SIMPLE)[-2]
     center = None
+
+    puck = None
+    for greenContour in greenContours:
+        M = cv2.moments(greenContour)
+        center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
+        puck = Puck.Puck(center)
+        table.greenPucks.append(puck)
 
     # only proceed if at least one contour was found
     for greenContour in greenContours:
