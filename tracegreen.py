@@ -65,13 +65,13 @@ while True:
     center = None
 
     # only proceed if at least one contour was found
-    if len(greenContours) > 0:
+    for greenContour in greenContours:
         # find the largest contour in the mask, then use
         # it to compute the minimum enclosing circle and
         # centroid
-        c = max(greenContours, key=cv2.contourArea)
-        ((x, y), radius) = cv2.minEnclosingCircle(c)
-        M = cv2.moments(c)
+        # c = max(greenContours, key=cv2.contourArea)
+        ((x, y), radius) = cv2.minEnclosingCircle(greenContour)
+        M = cv2.moments(greenContour)
         center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
 
         # only proceed if the radius meets a minimum size
