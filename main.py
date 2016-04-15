@@ -80,7 +80,7 @@ while True:
 
         M = cv2.moments(greenContour)
         center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
-        puck = Puck.Puck(center)
+        puck = Puck.Puck(center, radius)
         table.greenPucks.append(puck)
 
     newGreenScore = table.get_green_score()

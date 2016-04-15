@@ -1,6 +1,3 @@
-import Puck
-
-
 class ScoreCalculator:
     table = None
 
@@ -9,19 +6,23 @@ class ScoreCalculator:
         pass
 
     def calculate(self, pucks):
-        score = 0
+        totalscore = 0
         for puck in pucks:
-            assert isinstance(puck, Puck.Puck)
-            if self.within(puck.y, self.table.onePointOffset, self.table.twoPointOffset):
-                score += 1
-            if self.within(puck.y, self.table.twoPointOffset, self.table.threePointOffset):
-                score += 2
-            if self.within(puck.y, self.table.threePointOffset, self.table.fourPointOffset):
-                score += 3
-            if self.within(puck.y, self.table.fourPointOffset, 600):  # TODO: Change to actual end of table.
-                score += 4
+            position = puck.y + puck.radius
+            score = 1
 
-        return score
+            if self.within(position, self.table.onePointOffset, self.table.twoPointOffset):
+                score = 2
+            if self.within(position, self.table.twoPointOffset, self.table.threePointOffset):
+                score = 3
+            if self.within(position, self.table.threePointOffset, self.table.fourPointOffset):
+                score = 4
+            if position > self.table.fourPointOffset:
+                score = 0
+
+            totalscore += score
+
+        return totalscore
 
     @staticmethod
     def within(y1, start, end):
