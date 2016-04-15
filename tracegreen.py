@@ -18,7 +18,10 @@ args = vars(ap.parse_args())
 # list of tracked points
 
 greenLower = (45, 75, 30)
-greenUpper = (105, 210, 180)
+greenUpper = (105, 255, 180)
+
+# redLower = (100, 0, 33)
+# redUpper = (255, 75, 75)
 
 pts = deque(maxlen=args["buffer"])
 
@@ -50,29 +53,29 @@ while True:
     # construct a mask for the color "green", then perform
     # a series of dilations and erosions to remove any small
     # blobs left in the mask
-    mask = cv2.inRange(hsv, greenLower, greenUpper)
-    mask = cv2.erode(mask, None, iterations=2)
-    mask = cv2.dilate(mask, None, iterations=2)
-    cv2.imshow("Mask", mask)
+    greenMask = cv2.inRange(hsv, greenLower, greenUpper)
+    greenMask = cv2.erode(greenMask, None, iterations=2)
+    greenMask = cv2.dilate(greenMask, None, iterations=2)
+    cv2.imshow("Mask", greenMask)
 
     # find contours in the mask and initialize the current
     # (x, y) center of the ball
-    cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
-                            cv2.CHAIN_APPROX_SIMPLE)[-2]
+    greenContours = cv2.findContours(greenMask.copy(), cv2.RETR_EXTERNAL,
+                                     cv2.CHAIN_APPROX_SIMPLE)[-2]
     center = None
 
     # only proceed if at least one contour was found
-    if len(cnts) > 0:
+    if len(greenContours) > 0:
         # find the largest contour in the mask, then use
         # it to compute the minimum enclosing circle and
         # centroid
-        c = max(cnts, key=cv2.contourArea)
+        c = max(greenContours, key=cv2.contourArea)
         ((x, y), radius) = cv2.minEnclosingCircle(c)
         M = cv2.moments(c)
         center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
 
         # only proceed if the radius meets a minimum size
-        if radius > 20:
+        if radius > 10:
             # draw the circle and centroid on the frame,
             # then update the list of tracked points
             cv2.circle(frame, (int(x), int(y)), int(radius),
