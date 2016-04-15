@@ -20,8 +20,8 @@ args = vars(ap.parse_args())
 greenLower = (45, 75, 30)
 greenUpper = (105, 255, 180)
 
-# redLower = (100, 0, 33)
-# redUpper = (255, 75, 75)
+# redLower = (80, 0, 30)
+# redUpprt = (110, 50, 100)
 
 pts = deque(maxlen=args["buffer"])
 
