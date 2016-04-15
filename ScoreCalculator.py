@@ -12,13 +12,18 @@ class ScoreCalculator:
         score = 0
         for puck in pucks:
             assert isinstance(puck, Puck.Puck)
-            if puck.y > self.table.onePointOffset:
+            if self.within(puck.y, self.table.onePointOffset, self.table.twoPointOffset):
                 score += 1
-            if puck.y > self.table.twoPointOffset:
+            if self.within(puck.y, self.table.twoPointOffset, self.table.threePointOffset):
                 score += 2
-            if puck.y > self.table.threePointOffset:
+            if self.within(puck.y, self.table.threePointOffset, self.table.fourPointOffset):
                 score += 3
-            if puck.y > self.table.fourPointOffset:
+            if self.within(puck.y, self.table.fourPointOffset, 600):  # TODO: Change to actual end of table.
                 score += 4
 
         return score
+
+    @staticmethod
+    def within(y1, start, end):
+        return start < y1 < end
+        pass

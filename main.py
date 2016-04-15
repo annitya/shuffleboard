@@ -37,7 +37,6 @@ if not args.get("video", False):
 else:
     camera = cv2.VideoCapture(args["video"])
 
-# os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
 greenScore = 0
 # keep looping
 while True:
@@ -55,7 +54,7 @@ while True:
 
     # resize the frame, blur it, and convert it to the HSV
     # color space
-    frame = imutils.resize(frame, width=600)
+    frame = imutils.resize(frame, height=400)
     # blurred = cv2.GaussianBlur(frame, (11, 11), 0)
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
@@ -82,7 +81,10 @@ while True:
 
     newGreenScore = table.get_green_score()
     if newGreenScore != greenScore:
-        print newGreenScore
+        os.system("clear")
+        print "Green score of: " + str(newGreenScore)
+        print "Detected count: " + str(len(greenContours))
+        print "Pucks on table: " + str(len(table.greenPucks))
         greenScore = newGreenScore
 
     # only proceed if at least one contour was found
