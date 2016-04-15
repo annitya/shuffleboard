@@ -8,7 +8,7 @@ class ScoreCalculator:
     def calculate(self, pucks):
         totalscore = 0
         for puck in pucks:
-            position = puck.y + puck.radius
+            position = puck.y - puck.radius
             score = 1
 
             if self.within(position, self.table.onePointOffset, self.table.twoPointOffset):

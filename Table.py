@@ -20,10 +20,10 @@ class Table:
         self.redPucks = []
         self.greenPucks = []
 
-        self.onePointOffset = 75
-        self.twoPointOffset = 150
-        self.threePointOffset = 225
-        self.fourPointOffset = 300
+        self.onePointOffset = 65
+        self.twoPointOffset = 65 + 80
+        self.threePointOffset = 65 + 80 + 90
+        self.fourPointOffset = 65 + 80 + 90 + 135
 
         self.scoreCalculator = ScoreCalculator.ScoreCalculator(self)
 

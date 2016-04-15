@@ -9,13 +9,15 @@ class Tracker:
     lowerLimit = None
     upperLimit = None
     minRadius = None
+    maxRadius = None
     pts = None
     buffer = 64
 
-    def __init__(self, lower_limit, upper_limit, min_radius):
+    def __init__(self, lower_limit, upper_limit, min_radius, max_radius):
         self.lowerLimit = lower_limit
         self.upperLimit = upper_limit
         self.minRadius = min_radius
+        self.maxRadius = max_radius
         self.pts = deque(maxlen=self.buffer)
 
     def track(self, frame, table):
@@ -39,7 +41,7 @@ class Tracker:
 
         for contour in contours:
             ((x, y), radius) = cv2.minEnclosingCircle(contour)
-            if radius < self.minRadius:
+            if radius < self.minRadius or radius > self.maxRadius:
                 continue
 
             m = cv2.moments(contour)
@@ -60,7 +62,7 @@ class Tracker:
             center = (int(m["m10"] / m["m00"]), int(m["m01"] / m["m00"]))
 
             # only proceed if the radius meets a minimum size
-            if radius > self.minRadius:
+            if self.minRadius < radius < self.maxRadius:
                 # draw the circle and centroid on the frame,
                 # then update the list of tracked points
                 cv2.circle(frame, (int(x), int(y)), int(radius),
