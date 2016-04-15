@@ -38,7 +38,7 @@ else:
     camera = cv2.VideoCapture(args["video"])
 
 # os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
-
+greenScore = 0
 # keep looping
 while True:
     # grab the current frame
@@ -80,7 +80,10 @@ while True:
         puck = Puck.Puck(center)
         table.greenPucks.append(puck)
 
-    table.get_score()
+    newGreenScore = table.get_green_score()
+    if newGreenScore != greenScore:
+        print newGreenScore
+        greenScore = newGreenScore
 
     # only proceed if at least one contour was found
     for greenContour in greenContours:
