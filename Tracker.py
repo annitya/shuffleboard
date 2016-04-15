@@ -67,6 +67,9 @@ class Tracker:
             # c = max(greenContours, key=cv2.contourArea)
             ((x, y), radius) = cv2.minEnclosingCircle(contour)
             m = cv2.moments(contour)
+            if not m["m00"]:
+                continue
+
             center = (int(m["m10"] / m["m00"]), int(m["m01"] / m["m00"]))
 
             # only proceed if the radius meets a minimum size

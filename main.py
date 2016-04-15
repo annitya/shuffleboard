@@ -23,7 +23,7 @@ else:
     camera = cv2.VideoCapture(0)
 
 greenTracker = Tracker.Tracker((45, 75, 30), (105, 255, 180), 10, 40, "green")
-redTracker = Tracker.Tracker((90, 105, 170), (200, 255, 255), 10, 40, "red")
+redTracker = Tracker.Tracker((130, 105, 170), (200, 255, 255), 10, 40, "red")
 
 greenScore = 0
 redScore = 0
