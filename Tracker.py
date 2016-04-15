@@ -12,28 +12,32 @@ class Tracker:
     maxRadius = None
     pts = None
     buffer = 64
+    frameName = None
 
-    def __init__(self, lower_limit, upper_limit, min_radius, max_radius):
+    def __init__(self, lower_limit, upper_limit, min_radius, max_radius, frame_name):
         self.lowerLimit = lower_limit
         self.upperLimit = upper_limit
         self.minRadius = min_radius
         self.maxRadius = max_radius
         self.pts = deque(maxlen=self.buffer)
+        self.frameName = frame_name
 
     def track(self, frame, table):
         # resize the frame, blur it, and convert it to the HSV
         # color space
         frame = imutils.resize(frame, height=400)
-        # blurred = cv2.GaussianBlur(frame, (11, 11), 0)
+
+        frame = cv2.medianBlur(frame, 3, frame)
+        frame = cv2.GaussianBlur(frame, (11, 11), 0)
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
         # construct a mask for the color "green", then perform
         # a series of dilations and erosions to remove any small
         # blobs left in the mask
         mask = cv2.inRange(hsv, self.lowerLimit, self.upperLimit)
-        mask = cv2.erode(mask, None, iterations=2)
-        mask = cv2.dilate(mask, None, iterations=2)
-        cv2.imshow("Mask", mask)
+        mask = cv2.erode(mask, None, iterations=1)
+        mask = cv2.dilate(mask, None, iterations=1)
+        cv2.imshow("Mask_" + self.frameName, mask)
 
         # find contours in the mask and initialize the current
         # (x, y) center of the ball
@@ -47,9 +51,13 @@ class Tracker:
             m = cv2.moments(contour)
             center = (int(m["m10"] / m["m00"]), int(m["m01"] / m["m00"]))
             puck = Puck.Puck(center, radius)
-            table.greenPucks.append(puck)
+            # TODO: NOOOO! JUST NOOO!
+            if self.frameName == "red":
+                table.redPucks.append(puck)
+            else:
+                table.greenPucks.append(puck)
 
-        self.render(contours, frame)
+        # self.render(contours, frame)
 
     def render(self, contours, frame):
         for contour in contours:
@@ -86,4 +94,4 @@ class Tracker:
 
         # show the frame to our screen
         frame = cv2.flip(frame, 1)
-        cv2.imshow("Frame", frame)
+        cv2.imshow("Frame_" + self.frameName, frame)

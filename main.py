@@ -22,9 +22,11 @@ if args.get("video", False):
 else:
     camera = cv2.VideoCapture(0)
 
-greenTracker = Tracker.Tracker((45, 75, 30), (105, 255, 180), 10, 40)
+greenTracker = Tracker.Tracker((45, 75, 30), (105, 255, 180), 10, 40, "green")
+redTracker = Tracker.Tracker((90, 105, 170), (200, 255, 255), 10, 40, "red")
 
 greenScore = 0
+redScore = 0
 # keep looping
 while True:
     # grab the current frame
@@ -34,19 +36,24 @@ while True:
 
     table = Table.Table(edgeOffset)
     greenTracker.track(frame, table)
+    redTracker.track(frame, table)
 
     # if we are viewing a video and we did not grab a frame, then we have reached the end of the video
     if args.get("video") and not grabbed:
         break
 
     newGreenScore = table.get_green_score()
-    if newGreenScore != greenScore:
+    newRedScore = table.get_red_score()
+    if newGreenScore != greenScore or newRedScore != redScore:
         os.system("clear")
         print "Green score of: " + str(newGreenScore)
-        print "Pucks on table: " + str(len(table.greenPucks))
+        print "Red score of: " + str(newRedScore)
+        number_of_pucks = len(table.greenPucks) + len(table.redPucks)
+        print "Pucks on table: " + str(number_of_pucks)
         greenScore = newGreenScore
+        redScore = newRedScore
         with open('data.json', 'w') as outfile:
-            json.dump(greenScore, outfile)
+            json.dump([greenScore, redScore, number_of_pucks], outfile)
 
 # cleanup the camera and close any open windows
 camera.release()
